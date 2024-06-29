@@ -1,0 +1,43 @@
+name: Sync to Hugging Face Hub
+
+on:
+  push:
+    branches:
+      - main  # or your default branch name
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "muhamadaldiansyah24@gmail.com"
+          git config --global user.name "mattaldi"
+
+      - name: Clone Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git clone https://huggingface.co/spaces/mattaldi/KRAIGERF-AI-Assistant
+          cd KRAIGERF-AI-Assistant
+          rm -rf ./*  # Remove all existing files to avoid conflicts
+
+      - name: Copy Project Files
+        run: |
+          shopt -s extglob
+          cp -r !(KRAIGERF-AI-Assistant|.github) KRAIGERF-AI-Assistant/
+
+      - name: Push to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          cd KRAIGERF-AI-Assistant
+          git add .
+          git commit -m "Sync from GitHub"
+          git remote set-url origin https://mattaldi:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/mattaldi/KRAIGERF-AI-Assistant.git
+          git push origin main
