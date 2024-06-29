@@ -6,7 +6,7 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 
-st.title("Groq-powered Chat Clone")
+st.title("KRAIGERF AI Assistant")
 
 # Get API Key from environment variable
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -66,9 +66,3 @@ if prompt := st.chat_input("What would you like to know?"):
     
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": full_response})
-
-# Display API key status
-if GROQ_API_KEY:
-    st.sidebar.success("Groq API key configured")
-else:
-    st.sidebar.error("Groq API key not found in .env file.")
